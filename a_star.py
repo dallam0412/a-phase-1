@@ -277,14 +277,16 @@ map(radius+cleareance)
 open_list.put((dist(start,goal),dist(start,goal),0,start))
 closed_list=np.zeros((1200,500,12),dtype=int)
 closed_list_vis=[]
-new_goal=(0,0)
+new_goal=(0,0,0)
 got_goal=0
+back_track=[]
 table.append([0,start,start])
 while(open_list.empty()==False):
     current_node=open_list.get()
     now_node=current_node[3]
     if closed_list[int(now_node[0]*2)][int(now_node[1]*2)][int(now_node[2]/30)]!=1:
         closed_list[int(now_node[0]*2)][int(now_node[1]*2)][int(now_node[2]/30)]=1
+        closed_list_vis.append((now_node[0],now_node[1]))
         if dist(now_node,goal)>1.5:
             if check_reach==False and now_node[0]>0 and now_node[0]+(stepsize*math.cos(np.deg2rad(now_node[2]+30)))<600 and now_node[1]>0 and now_node[1]+(stepsize*math.sin(np.deg2rad(now_node[2]+30)))<250:
                 plus30_action(now_node,closed_list,stepsize,current_node[2],goal)
@@ -298,8 +300,18 @@ while(open_list.empty()==False):
                 minus30_action(now_node,closed_list,stepsize,current_node[2],goal)
         else:
             got_goal=1
-            check_reach=True
+            new_goal=(now_node[0],now_node[1],now_node[2])
             break
-        
-
-print(table)
+if got_goal==1:
+    back_node=new_goal
+    back_track=[back_node]
+    while(True):
+        for i in range(len(table)):
+            if table[i][2]==back_node:
+                back_node=table[i][1]
+                back_track.append(back_node)
+                break
+        if back_node==start:
+            break
+    back_track.reverse()
+    print(back_track)
