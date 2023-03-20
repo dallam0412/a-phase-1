@@ -8,6 +8,8 @@ table=[]
 goal_threshold=[]
 open_list=pq()
 c2c=[]
+reached_goal=(0,0)
+check_reach=False
 def map(cleareance):
 
 
@@ -67,6 +69,7 @@ def map(cleareance):
 
 
 def zero_action(node,cost,visited,stepsize,c2c,c2g,goal):
+    global check_reach
     new_x=node[0]+stepsize*math.cos(np.deg2rad(node[2]))
     new_y=node[0]+stepsize*math.sin(np.deg2rad(node[2]))
     new_theta=node[2]+360
@@ -96,7 +99,7 @@ def zero_action(node,cost,visited,stepsize,c2c,c2g,goal):
         new_theta=new_theta-360
     new_node=(new_x,new_y,new_theta)
     obstacle_node=(new_x,new_y)
-    if visited[new_y*2][new_x*2][360/new_theta]!=1 and obstacle_node not in obstacle_space and new_y<=250:
+    if visited[int(new_x*2)][int(new_y*2)][int(360/new_theta)]!=1 and obstacle_node not in obstacle_space and new_y<=250:
         c2c=c2c+stepsize
         c2g=math.sqrt((goal[0]-new_x)**2+(goal[1]-new_y)**2)
         cost=c2c+c2g
@@ -110,12 +113,16 @@ def zero_action(node,cost,visited,stepsize,c2c,c2g,goal):
                 else:
                     return
         table.append([cost,node,new_node])
-        open_list.put((cost,(new_node),c2c,c2g))
+        open_list.put((cost,c2g,c2c,(new_node)))
 
 def minus30_action(node,cost,visited,stepsize,c2c,c2g,goal):
+    global check_reach
+    global reached_goal
     new_x=node[0]+stepsize*math.cos(np.deg2rad(node[2]-30))
     new_y=node[0]+stepsize*math.sin(np.deg2rad(node[2]-30))
     new_theta=node[2]+360
+    if ((new_x-goal[0])**2+(new_y-goal[1])**2)<=(1.5**2):
+        check_reach=True
     check_new_x=math.floor(new_x)
     check_new_y=math.floor(new_y)
     if new_x-check_new_x>0.5:
@@ -142,7 +149,8 @@ def minus30_action(node,cost,visited,stepsize,c2c,c2g,goal):
         new_theta=new_theta-360
     new_node=(new_x,new_y,new_theta)
     obstacle_node=(new_x,new_y)
-    if visited[new_y*2][new_x*2][360/new_theta]!=1 and obstacle_node not in obstacle_space and new_y<=250:
+    reached_goal=(new_x,new_y,new_theta)
+    if visited[int(new_x*2)][int(new_y*2)][int(360/new_theta)]!=1 and obstacle_node not in obstacle_space and new_y<=250:
         c2c=c2c+stepsize
         c2g=math.sqrt((goal[0]-new_x)**2+(goal[1]-new_y)**2)
         cost=c2c+c2g
@@ -156,11 +164,15 @@ def minus30_action(node,cost,visited,stepsize,c2c,c2g,goal):
                 else:
                     return
         table.append([cost,node,new_node])
-        open_list.put((cost,(new_node),c2c,c2g))
+        open_list.put((cost,c2g,c2c,(new_node)))
 
 def minus60_action(node,cost,visited,stepsize,c2c,c2g,goal):
+    global check_reach
+    global reached_goal
     new_x=node[0]+stepsize*math.cos(np.deg2rad(node[2]-60))
     new_y=node[0]+stepsize*math.sin(np.deg2rad(node[2]-60))
+    if ((new_x-goal[0])**2+(new_y-goal[1])**2)<=(1.5**2):
+        check_reach=True
     new_theta=node[2]+360
     check_new_x=math.floor(new_x)
     check_new_y=math.floor(new_y)
@@ -187,8 +199,9 @@ def minus60_action(node,cost,visited,stepsize,c2c,c2g,goal):
     if new_theta>360:
         new_theta=new_theta-360
     new_node=(new_x,new_y,new_theta)
+    reached_goal=(new_x,new_y,new_theta)
     obstacle_node=(new_x,new_y)
-    if visited[new_y*2][new_x*2][360/new_theta]!=1 and obstacle_node not in obstacle_space and new_y<=250:
+    if visited[int(new_x*2)][int(new_y*2)][int(360/new_theta)]!=1 and obstacle_node not in obstacle_space and new_y<=250:
         c2c=c2c+stepsize
         c2g=math.sqrt((goal[0]-new_x)**2+(goal[1]-new_y)**2)
         cost=c2c+c2g
@@ -202,11 +215,15 @@ def minus60_action(node,cost,visited,stepsize,c2c,c2g,goal):
                 else:
                     return
         table.append([cost,node,new_node])
-        open_list.put((cost,(new_node),c2c,c2g))
+        open_list.put((cost,c2g,c2c,(new_node)))
 
 def plus60_action(node,cost,visited,stepsize,c2c,c2g,goal):
+    global check_reach
+    global reached_goal
     new_x=node[0]+stepsize*math.cos(np.deg2rad(node[2]+60))
     new_y=node[0]+stepsize*math.sin(np.deg2rad(node[2]+60))
+    if ((new_x-goal[0])**2+(new_y-goal[1])**2)<=(1.5**2):
+        check_reach=True
     new_theta=node[2]+360
     check_new_x=math.floor(new_x)
     check_new_y=math.floor(new_y)
@@ -233,8 +250,9 @@ def plus60_action(node,cost,visited,stepsize,c2c,c2g,goal):
     if new_theta>360:
         new_theta=new_theta-360
     new_node=(new_x,new_y,new_theta)
+    reached_goal=(new_x,new_y,new_theta)
     obstacle_node=(new_x,new_y)
-    if visited[new_y*2][new_x*2][360/new_theta]!=1 and obstacle_node not in obstacle_space and new_y<=250:
+    if visited[int(new_x*2)][int(new_y*2)][int(360/new_theta)]!=1 and obstacle_node not in obstacle_space and new_y<=250:
         c2c=c2c+stepsize
         c2g=math.sqrt((goal[0]-new_x)**2+(goal[1]-new_y)**2)
         cost=c2c+c2g
@@ -248,11 +266,15 @@ def plus60_action(node,cost,visited,stepsize,c2c,c2g,goal):
                 else:
                     return
         table.append([cost,node,new_node])
-        open_list.put((cost,(new_node),c2c,c2g))
+        open_list.put((cost,c2g,c2c,(new_node)))
 
 def plus30_action(node,cost,visited,stepsize,c2c,c2g,goal):
+    global check_reach
+    global reached_goal
     new_x=node[0]+stepsize*math.cos(np.deg2rad(node[2]+30))
     new_y=node[0]+stepsize*math.sin(np.deg2rad(node[2]+30))
+    if ((new_x-goal[0])**2+(new_y-goal[1])**2)<=(1.5**2):
+        check_reach=True
     new_theta=node[2]+360
     check_new_x=math.floor(new_x)
     check_new_y=math.floor(new_y)
@@ -279,8 +301,9 @@ def plus30_action(node,cost,visited,stepsize,c2c,c2g,goal):
     if new_theta>360:
         new_theta=new_theta-360
     new_node=(new_x,new_y,new_theta)
+    reached_goal=(new_x,new_y,new_theta)
     obstacle_node=(new_x,new_y)
-    if visited[new_y*2][new_x*2][360/new_theta]!=1 and obstacle_node not in obstacle_space and new_y<=250:
+    if visited[int(new_x*2)][int(new_y*2)][int(360/new_theta)]!=1 and obstacle_node not in obstacle_space and new_y<=250:
         c2c=c2c+stepsize
         c2g=math.sqrt((goal[0]-new_x)**2+(goal[1]-new_y)**2)
         cost=c2c+c2g
@@ -294,14 +317,7 @@ def plus30_action(node,cost,visited,stepsize,c2c,c2g,goal):
                 else:
                     return
         table.append([cost,node,new_node])
-        open_list.put((cost,(new_node),c2c,c2g))
-
-def goal_thresh(x_g,y_g):
-    for x in range(600):
-        for y in range(250):
-            if ((x-x_g)**2+(y-y_g)**2)<=(1.5**2):
-                goal_threshold.append((x,y))
-
+        open_list.put((cost,c2g,c2c,(new_node)))
 
 def convert_coord(coordinate,frame_height):
     return(coordinate[0],frame_height-coordinate[1])
@@ -359,21 +375,21 @@ def disp(bfs,path):
 
 
 clearance=int(input("enter the clearance of the robot"))
+robot_radius=int(input("enter robot radius "))
 while(True):
     stepsize=int(input("stepsize"))
     if stepsize>=1 and stepsize<=10:
         break
-robot_radius=int(input("enter robot radius"))
-map(clearance)
+map(clearance+robot_radius)
 check_correct_input=False
 while (check_correct_input!=True):
     start_x=int(input("enter the x coordinate of start node "))
     start_y=int(input("enter the y coordinate of start node "))
-    start_theta=int(input("enter the starting orientation"))
+    start_theta=int(input("enter the starting orientation "))
     if start_theta==0:
         start_theta=360
     start=(start_x,start_y,start_theta)
-    if start in obstacle_space:
+    if (start_x,start_y) in obstacle_space:
         print("start node is in obstacle space")
         continue
     else:
@@ -381,31 +397,64 @@ while (check_correct_input!=True):
     goal_x=int(input("enter the x coordinate of goal node "))
     goal_y=int(input("enter the y coordinate of goal node "))
     goal_orientation=int(input("enter the goal orientation"))
+    if goal_orientation==0:
+        goal_orientation=360
     goal=(goal_x,goal_y,goal_orientation)
-    if goal in obstacle_space:
+    if (goal_x,goal_y) in obstacle_space:
         check_correct_input=False
         print("end node is in obstacle space")
-goals=goal_thresh(goal_x,goal_y)
-open_list.put((0,start,0,0))
-table.append([0,(start_x,start_y),(start_x,start_y)])
-closed_list=np.zeros((500,1200,13),dtype="int")
+open_list.put((0,0,0,start))
+table.append([0,start,start])
+closed_list=np.zeros((1200,500,13),dtype="int")
+closed_list_vis=[]
 got_goal=0
 print("processing")
 while(open_list.empty()==False):
     current_node=open_list.get()
-    now_node=current_node[1]
+    now_node=current_node[3]
     x=now_node[0]
     y=now_node[1]
     the=now_node[2]
     if ((x-goal_x)**2+(y-goal_y)**2)<=(1.5**2):
+        reached_goal=(x,y,the)
         got_goal=1
         break
-    closed_list[y*2][x*2][360/the]=1
-    zero_action(current_node[1],current_node[0],closed_list,stepsize,current_node[2],current_node[3],goal)
-    minus60_action(current_node[1],current_node[0],closed_list,stepsize,current_node[2],current_node[3],goal)
-    minus30_action(current_node[1],current_node[0],closed_list,stepsize,current_node[2],current_node[3],goal)
-    plus30_action(current_node[1],current_node[0],closed_list,stepsize,current_node[2],current_node[3],goal)
-    plus60_action(current_node[1],current_node[0],closed_list,stepsize,current_node[2],current_node[3],goal)
-closed_list.append(goal)
-
-
+    closed_list_vis.append(current_node)
+    closed_list[int(y*2)][int(x*2)][int(360/the)]=1
+    zero_action(current_node[3],current_node[0],closed_list,stepsize,current_node[1],current_node[2],goal)
+    if check_reach==False:
+        minus60_action(current_node[3],current_node[0],closed_list,stepsize,current_node[1],current_node[2],goal)
+    else:
+        got_goal=1
+    if check_reach==False:
+        minus30_action(current_node[3],current_node[0],closed_list,stepsize,current_node[1],current_node[2],goal)
+    else:
+        got_goal=1
+    if check_reach==False:
+        plus30_action(current_node[3],current_node[0],closed_list,stepsize,current_node[1],current_node[2],goal)
+    else:
+        got_goal=1
+    if check_reach==False:
+        plus60_action(current_node[3],current_node[0],closed_list,stepsize,current_node[1],current_node[2],goal)
+    else:
+        got_goal=1
+print(table)
+if got_goal==1:
+    closed_list_vis.append(reached_goal)
+    back_node=reached_goal
+    print(back_node)
+    back_track=[back_node]
+    while(True):
+        for i in range(len(table)):
+            if table[i][2]==back_node:
+                print(" back node ",back_node)
+                back_node=table[i][1]
+                back_track.append(back_node)
+                break
+        if back_node==start:
+            break
+    print("done")
+    back_track.reverse()
+    print(back_track)
+else:
+    print("no solution")
