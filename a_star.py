@@ -402,14 +402,9 @@ while(True):
     if stepsize>=1 and stepsize<=10:
         break
 
-f=open("obstacle.txt","w")
 parallel_seg_hex_1, parallel_seg_hex_2, parallel_seg_hex_3, parallel_seg_hex_4, parallel_seg_tri_1, parallel_seg_tri_2 = clearance((cleareance+radius), 1)
 obstacle_space = orientation_block((cleareance + radius), parallel_seg_hex_1, parallel_seg_hex_2, parallel_seg_hex_3, parallel_seg_hex_4, parallel_seg_tri_1, parallel_seg_tri_2)
 intersect_hex_1, intersect_hex_2, intersect_hex_3, intersect_hex_4, intersect_hex_5, intersect_hex_6, intersect_tri_1, intersect_tri_2, intersect_tri_3, intersect_tri_4, intersect_tri_5 = clearance(cleareance, 0)
-#print(obstacle_space)
-#for i in range(len(obstacle_space)):
- #   f.write(str(obstacle_space[i]))
-#f.close()
 
 
 while(True):
@@ -457,7 +452,6 @@ while(open_list.empty()==False):
             print('Goal reached')
             new_goal=(now_node[0],now_node[1],now_node[2])
             break
-print(table)
 if got_goal==1:
     closed_list_vis.discard(start)
     back_node=new_goal
